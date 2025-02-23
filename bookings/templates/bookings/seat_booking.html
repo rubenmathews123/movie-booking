@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Seats for {{ movie.title }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'bookings/seat_booking.css' %}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">BookMyShow Clone</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'movie_list' %}">Movies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'booking_history' %}">My Bookings</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Movie Info -->
+    <div class="container mt-4">
+        <h2 class="text-center">Book Seats for {{ movie.title }}</h2>
+        <p class="text-center">{{ movie.description }}</p>
+        <img src="{{ movie.image_url }}" class="movie-banner" alt="{{ movie.title }}">
+
+        <!-- Error or Success Messages -->
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+
+        <!-- Seat Selection Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="seat-container">
+                {% for seat in seats %}
+                <label class="seat {% if seat.is_booked %}booked{% endif %}">
+                    <input type="radio" name="seat" value="{{ seat.id }}" {% if seat.is_booked %}disabled{% endif %}>
+                    Seat {{ seat.seat_number }}
+                </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Book Selected Seat</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
